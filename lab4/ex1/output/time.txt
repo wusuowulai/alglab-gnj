@@ -1,0 +1,5 @@
+next: 10.5us kmp: 1804.4us
+next: 7.2us kmp: 1976.5us
+next: 6.7us kmp: 7052us
+next: 8.3us kmp: 40420.7us
+next: 7us kmp: 131601us
