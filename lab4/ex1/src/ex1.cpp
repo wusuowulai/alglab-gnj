@@ -10,39 +10,32 @@ using namespace chrono;
 using namespace filesystem;
 
 void find_next(vector<int>& next, string t) {
-    next.resize(t.size());
-    next[0] = -1;
-    for (int i = 1; i < t.size(); i++) {
-        int j = next[i - 1];
-        while (t[i + 1] != t[j + 1] && j >= 0) {
-            j = next[j];
+    next.resize(t.length());
+    for (int q = 1, k = 0; q < t.length(); ++q) {
+        while (k && t[k] != t[q]) {
+            k = next[k - 1];
         }
-        if (t[i] == t[j + 1]) {
-            next[i] = j + 1;
-        } else {
-            next[i] = 0;
+        if (t[k] == t[q]) {
+            ++k;
         }
+        next[q] = k;
     }
 }
 
 void KMP(string t, string s, vector<int>& position, vector<int> next) {
-    for (int i = 0; i < s.size(); i++) {
-        int pos = 0;
-        int j   = i;
-        while (pos < t.size() && j < s.size()) {
-            if (s[j] == t[pos]) {
-                j++;
-                pos++;
-            } else {
-                if (pos == 0) {
-                    j++;
-                } else {
-                    pos = next[pos - 1] + 1;
-                }
-            }
+    auto n = s.length();
+    auto m = t.length();
+    find_next(next, t);
+    for (int i = 0, q = 0; i < n; ++i) {
+        while (q && t[q] != s[i]) {
+            q = next[q - 1];
         }
-        if (pos == t.size() && (j - i) == t.size()) {
-            position.push_back(i);
+        if (t[q] == s[i]) {
+            ++q;
+        }
+        if (q == m) {
+            position.push_back(i - m + 1);
+            q = next[q - 1];
         }
     }
 }
@@ -83,6 +76,7 @@ int main() {
         time = t2 - t1;
         outputtime << " kmp: " << duration<double, micro>(time).count() << "us"
                    << endl;
+        output << position.size() << endl;
         for (int j = 0; j < next.size(); j++) {
             output << next[j] << " ";
         }
